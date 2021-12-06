@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <title>Equation de Drake</title>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="img/gdl.png" />
+  <link type="text/css" rel="stylesheet" href="css/styles.css" />
+  <link type="text/css" rel="stylesheet" href="css/drake.css" />
+  <link rel="stylesheet" href="vendor/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <!--link rel="stylesheet" href="vendor/dataTables/css/dataTables.bootstrap.min.css" / -->
+
+  <script src="vendor/jquery/jquery-3.4.1.min.js"></script>
+  <script src="vendor/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="vendor/jrange/jquery.range.js"></script>
+  <!-- script src="vendor/dataTables/js/jquery.dataTables.min.js"></script>
+  <script src="vendor/dataTables/js/dataTables.bootstrap.min.js"></script>
+  <script src="vendor/popper/popper.min.js"></script>
+  <script src="js/d3.v3.min.js"></script>
+<!--script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+  });
+</script>
+  <!--script src="vendor/mathjax/MathJax.js?config=TeX-AMS_HTML-full"></script>
+  <!-- script src="https://d3js.org/d3.v4.min.js"></script -->
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row content">
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#"><img src="img/gdl-black.png">Gens de la Lune</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="index.html">Exoplanètes</a></li>
+          <li class="active"><a href="#">Equation de Drake</a></li>
+          <li><a href="ph.html">Pyramide holographique</a></li>
+          <li><a href="#">Lune</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <h1 class="display-1" style="color: white;">Equation de drake	</h1>
+      <hr class="line">
+	  <!--span id="dateMaj" width="100%"></span-->
+      <br>
+      <h2 class="display-2" style="color: white;">Combien y-a-t-il de civilisations intelligentes dans la galaxie ?</h2><br><br>
+      <h3 class="display-3" style="color: white;">Voici la question à laquelle Francis Drake a tenté de répondre dans les années 60<br>
+                                            en proposant une équation permettant permet d'estimer le nombre de civilisation dans notre galaxie.<br><br></h3>
+      <br>
+      <div class="row">
+        <table class="table" id="drakeTable">
+          <thead>
+            <tr>
+      		  <th width="8%"><img id="eqn-n" src="img/eqn-n.jpg"></th>
+              <th width="5%"><img src="img/egalite.png"></th>
+              <th width="8%"><img id="eqn-r" src="img/eqn-r.jpg"></th>
+              <th width="5%"><img src="img/multiplication.png"></th>
+              <th width="8%"><img id="eqn-fp" src="img/eqn-fp.jpg"></th>
+              <th width="5%"><img src="img/multiplication.png"></th>
+              <th width="8%"><img id="eqn-ne" src="img/eqn-ne.jpg"></th>
+              <th width="5%"><img src="img/multiplication.png"></th>
+              <th width="8%"><img id="eqn-fl" src="img/eqn-fl.jpg"></th>
+              <th width="8%"><img src="img/multiplication.png"></th>
+      	      <th width="5%"><img id="eqn-fi" src="img/eqn-fi.jpg"></th>
+              <th width="8%"><img src="img/multiplication.png"></th>
+      	      <th width="5%"><img id="eqn-fc" src="img/eqn-fc.jpg"></th>
+              <th width="8%"><img src="img/multiplication.png"></th>
+      		  <th width="8%"><img id="eqn-l" src="img/eqn-l.jpg"></th>
+    	    </tr>
+          </thead>
+          <tbody>
+            <tr>
+        	  <td width="8%"><p id="p-n">Nombre probable de civilisations dans notre galaxie</p></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><p id="p-r">Le taux de formation de nouvelles étoiles dans notre galaxie</p></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><p id="p-fp">Fraction de ces étoiles possédant des planètes</td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><p id="p-ne">Nombre moyen de planètes par étoile potentiellement propices à la vie</td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><p id="p-fl">Fraction de ces planètes sur lesquelles la vie apparaît effectivement</td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><p id="p-fi">Fraction de ces planètes sur lesquelles apparait une vie intelligente</td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><p id="p-fc">Fraction de ces planètes capables et désireuses de communiquer</p></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><p id="p-l">Durée de vie moyenne d'une civilisation</td>
+        	</tr>
+            <tr>
+        	  <td width="8%"><img id="drake-n" class="img-rounded" src="img/drake-n.jpg"></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><img id="drake-r" class="img-rounded" src="img/drake-r.jpg"></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><img id="drake-fp" class="img-rounded" src="img/drake-fp.jpg"></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><img id="drake-ne" class="img-rounded" src="img/drake-ne.jpg"></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><img id="drake-fl" class="img-rounded" src="img/drake-fl.jpg"></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><img id="drake-fi" class="img-rounded" src="img/drake-fi.jpg"></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><img id="drake-fc" class="img-rounded" src="img/drake-fc.jpg"></td>
+        	  <td width="5%"></td>
+        	  <td width="8%"><img id="drake-l" class="img-rounded" src="img/drake-l.jpg"></td>
+        	</tr>
+	      </tbody>
+		</table>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+		  <div class="row">
+		  <div id="myScrollspy">
+            <nav>
+              <ul class="nav" align="left">
+                <li class="nav-item">
+                  <a id="a-r" class="nav-link active" href="#div-r">Etoiles en formation</a>
+                </li>
+                <li class="nav-item">
+                  <a id="a-fp" class="nav-link" href="#div-fp">Fraction possédant des planètes</a>
+                </li>
+                <li class="nav-item">
+                  <a id="a-ne" class="nav-link" href="#div-ne">Nombre propices à la vie</a>
+                </li>
+                <li class="nav-item">
+                  <a id="a-fl" class="nav-link" href="#div-fl">Fraction apparition de la vie</a>
+                </li>
+                <li class="nav-item">
+                  <a id="a-fi" class="nav-link" href="#div-fi">Fraction apparition vie intelligente</a>
+                </li>
+                <li class="nav-item">
+                  <a id="a-fc" class="nav-link" href="#div-fc">Fraction apparition vie communicante</a>
+                </li>
+                <li class="nav-item">
+                  <a id="a-l" class="nav-link" href="#div-l">Durée moyenne civilization</a>
+                </li>
+              </ul>
+            </nav>
+		  </div>
+		  </div>
+        </div>
+		<div class="col-sm-10">
+		  <div id="div-r">
+		    <table class="table" id="varTable">
+              <tr>
+		        <td width="30%"><p><font size=5>R<sup>*</sup></font> est le taux de formation de nouvelles étoiles dans notre galaxie.<br>
+                                   -> estimé par Drake à dix par an : R* = 10/an</p>
+		        </td>
+		        <td width="70%" align="left">
+				  <div class="slideContainer" width="150px">
+				    <input type="range" min="1" max="100" value="10" class="slider" id="range-r" list="list-r">
+                    <datalist id="list-r">
+                      <option>10</option> 
+                      <option label="30">30</option> 
+                      <option>50</option> 
+                      <option>70</option>
+                      <option>90</option> 
+                    </datalist>
+				    <p align="center">Valeur: <span id="value-r">10</span> / an</p>
+				  </div>
+		        </td>
+		      </tr>
+	        </table>
+          </div>
+		  <div id="div-fp">
+		    <table class="table" id="varTable">
+              <tr>
+		        <td width="30%"><p><font size=5>F</font><sub>P</sub> est la fraction de ces étoiles possédant des planètes.<br>-> estimé par Drake à 0,5</p>
+		        </td>
+		        <td width="70%" align="left">
+				  <div class="slideContainer">
+				    <input type="range" min="1" max="100" value="1" class="slider" id="range-fp">
+				    <p align="center">Valeur: <span id="value-fp">1</span> %</p>
+				  </div>
+		        </td>
+		      </tr>
+	        </table>
+          </div>
+		  <div id="div-ne">
+		    <table class="table" id="varTable">
+              <tr>
+		        <td width="30%"><p><font size=5>N</font><sub>e</sub> est le nombre moyen de planètes par étoile potentiellement propices à la vie.<br>
+                                   -> estimé par Drake à 2</p>
+		        </td>
+		        <td width="70%" align="left">
+				  <div class="slideContainer">
+				    <input type="range" min="1" max="10" value="2" class="slider" id="range-ne">
+				    <p align="center">Valeur: <span id="value-ne">2</span> %</p>
+				  </div>
+		        </td>
+		      </tr>
+	        </table>
+          </div>
+		  <div id="div-fl">
+		    <table class="table" id="varTable">
+              <tr>
+		        <td width="30%"><p><font size=5>F</font><sub>L</sub> est la fraction de ces planètes sur lesquelles la vie apparaît effectivement.<br>
+                                   -> estimé par Drake à 1</p>
+		        </td>
+		        <td width="70%" align="left">
+				  <div class="slideContainer">
+				    <input type="range" min="1" max="100" value="100" class="slider" id="range-fl">
+				    <p align="center">Valeur: <span id="value-fl">100</span> %</p>
+				  </div>
+		        </td>
+		      </tr>
+	        </table>
+          </div>
+		  <div id="div-fi">
+		    <table class="table" id="varTable">
+              <tr>
+		        <td width="30%"><p><font size=5>F</font><sub>I</sub> est la fraction de ces planètes sur lesquelles apparait une vie intelligente.<br>
+                                   -> estimé par Drake à 0,01</p>
+		        </td>
+		        <td width="70%" align="left">
+				  <div class="slideContainer">
+				    <input type="range" min="1" max="100" value="1" class="slider" id="range-fi">
+				    <p align="center">Valeur: <span id="value-fi">1</span> %</p>
+				  </div>
+		        </td>
+		      </tr>
+	        </table>
+          </div>
+		  <div id="div-fc">
+		    <table class="table" id="varTable">
+              <tr>
+		        <td width="30%"><p><font size=5>N<sub>e</sub></font>  est la fraction de ces planètes capables et désireuses de communiquer.<br>
+                                   -> estimé par Drake à 0,01</p>
+		        </td>
+		        <td width="70%" align="left">
+				  <div class="slideContainer">
+				    <input type="range" min="1" max="100" value="1" class="slider" id="range-fc">
+				    <p align="center">Valeur: <span id="value-fc">1</span> %</p>
+				  </div>
+		        </td>
+		      </tr>
+	        </table>
+          </div>
+		  <div id="div-l">
+		    <table class="table" id="varTable">
+              <tr>
+		        <td width="30%"><p><font size=5>N<sub>e</sub></font> est la durée de vie moyenne d'une civilisation.<br>
+                                   -> estimé par Drake à 10 000 années</p>
+		        </td>
+		        <td width="70%" align="left">
+				  <div class="slideContainer">
+				    <input type="range" min="0" max="1000000" value="10000" step="1000" class="slider" id="range-l">
+				    <p align="center">Valeur: <span id="value-l">10000</span> années</p>
+				  </div>
+		        </td>
+		      </tr>
+	        </table>
+          </div>
+		</div>
+     </div>
+    </div>
+  </div>
+</div>
+<footer class="container-fluid">
+  <p style="color: grey;">Association Gens de la Lune</p>
+</footer>
+
+<!-- Functions  -->
+<script src="js/drake.js"></script>
+<!--script src="exoplanet.eu_catalog.json"></script>
+<script src="js/exoplanets.js"></script>
+<script src="js/orbite.js"></script>	
+<script src="js/system.js"></script-->
+
+<!-- Resources -->
+<!--script src="amcharts/core.js"></script>
+<script src="amcharts/charts.js"></script>
+<script src="amcharts/dark.js"></script>
+<script src="amcharts/animated.js"></script>
+<script src="js/line.js"></script>
+<script src="js/donut.js"></script>
+<script src="js/timeline.js"></script-->
+
+</body>
+</html>
