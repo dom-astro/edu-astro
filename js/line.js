@@ -44,7 +44,7 @@ barres.forEach(function(barre, i) {
 			data.tips="Tess: Recensement de manière systématique des exoplanètes les plus proches";
 			break;
 		case 2021:
-			data.bullet="img/jwsp.png";
+			data.bullet="img/jwst.png";
 			data.tips="Lancement par une fusée Ariane 5 du James-Webb Space Télescope";
 			break;
 		default:
