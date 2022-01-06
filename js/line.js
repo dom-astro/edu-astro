@@ -15,44 +15,47 @@ chart.maskBullets = false;
 barres.forEach(function(barre, i) {
 	var data = {};
 	
-	data.date=barre.annee+"-01-01";
-	data.nbPlanete=barre.nbPlanete;
-	data.townName=i;
-	data.nbDiscovered=barre.nbDiscovered;
-	data.rayon=5;
-    //data.townSize=12;
-    data.latitude=barre.nbPlanete;
-	switch (+barre.annee) {
-		case 1995:
-			data.bullet="img/51Pegasi_b.jpg";
-			data.tips="Découverte de la première exoplanète";
-			break; 
-		case 2006:
-			data.bullet="img/Corot.png";
-			data.tips="CoRoT: premier télescope en orbite destiné à la recherche de planètes extrasolaires";
-			break;
-		case 2009:
-			data.bullet="img/Kepler.png";
-			data.tips="Lancement du satellite Kepler";
-			break;
-		case 2015:
-			data.bullet="img/Trappist.png";
-			data.tips="Découverte de 7 planètes orbitant autour de Trappist-1";
-			break;
-		case 2018:
-			data.bullet="img/Tess.png";
-			data.tips="Tess: Recensement de manière systématique des exoplanètes les plus proches";
-			break;
-		case 2021:
-			data.bullet="img/jwst.png";
-			data.tips="Lancement par une fusée Ariane 5 du James-Webb Space Télescope";
-			break;
-		default:
-			data.bullet="";
-			data.tips="";
+	if (barre.annee>=1995) {
+		data.date=barre.annee+"-01-01";
+		data.nbPlanete=barre.nbPlanete;
+		data.townName=i;
+		data.nbDiscovered=barre.nbDiscovered;
+		data.rayon=5;
+		
+	    	//data.townSize=12;
+	    	data.latitude=barre.nbPlanete;
+		switch (+barre.annee) {
+			case 1995:
+				data.bullet="img/51Pegasi_b.jpg";
+				data.tips="Découverte de la première exoplanète";
+				break; 
+			case 2006:
+				data.bullet="img/Corot.png";
+				data.tips="CoRoT: premier télescope en orbite destiné à la recherche de planètes extrasolaires";
+				break;
+			case 2009:
+				data.bullet="img/Kepler.png";
+				data.tips="Lancement du satellite Kepler";
+				break;
+			case 2015:
+				data.bullet="img/Trappist.png";
+				data.tips="Découverte de 7 planètes orbitant autour de Trappist-1";
+				break;
+			case 2018:
+				data.bullet="img/Tess.png";
+				data.tips="Tess: Recensement de manière systématique des exoplanètes les plus proches";
+				break;
+			case 2021:
+				data.bullet="img/jwst.png";
+				data.tips="Lancement par une fusée Ariane 5 du James-Webb Space Télescope";
+				break;
+			default:
+				data.bullet="";
+				data.tips="";
+		}
+
+		chart.data.push(data);
 	}
-	
-	chart.data.push(data);
 });
 
 // Create axes
