@@ -61,9 +61,9 @@ datas.forEach(function(data,i) {
 	} else {
 		exoPlanet.discovered = data.discovered;
 	}
-	exoPlanet.masse = data.mass;
+	exoPlanet.masse = data.mass*317.62; // conversion en masse terrestre
 	//exoPlanet.rayon = data.radius == null ? 10 : data.radius;
-	exoPlanet.rayon = data.radius; //(data.radius == null ? 0.1 : data.radius);
+	exoPlanet.rayon = data.radius*11.2; // conversion en rayon terrestre//(data.radius == null ? 0.1 : data.radius);
 	exoPlanet.periode = data.orbital_period;
 	exoPlanet.distance = data.star_distance;
 	exoPlanet.updated = data.updated;
