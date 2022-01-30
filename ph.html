@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <title>Pyramide holographique</title>
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="img/gdl.png" />
-  <link rel="stylesheet" href="css/bootstrap-3.3.7.min.css">
+  <link rel="stylesheet" href="vendor/bootstrap/3.3.7/css/bootstrap.min.css" />
   <link type="text/css" rel="stylesheet" href="css/styles.css"/>
-  <script src="js/jquery-3.4.0.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/d3.v3.min.js"></script>
-<link rel="stylesheet" href="css/ph.css" />
+  <link rel="stylesheet" href="css/ph.css" />
+
+  <script src="vendor/jquery/jquery-3.4.1.min.js"></script>
+  <script src="vendor/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <!-- script src="https://d3js.org/d3.v4.min.js"></script -->
 </head>
 <body>
@@ -20,22 +20,25 @@
   <div class="row content">
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#"><img src="img/gdl-black.png">Gens de la Lune</a>
-        </div>
-        <!--ul class="nav navbar-nav">
+        <a class="navbar-brand" href="dev.html">
+          <img src="./img/gdl-black.png" alt="Gens de la lune Logo" style="width:40px;" /> 
+      </a>
+
+        <ul class="nav navbar-nav">
           <li><a href="index.html">Exoplanètes</a></li>
-          <li><a href="#">Equation de Drake</a></li>
-          <li class="active"><a href="#">Pyramide holographique</a></li>
+          <li><a href="messier.html">Catalogue Messier</a></li>
+          <li><a href="drake.html">Equation de Drake</a></li>
+          <li class="active"><a href="ph.html">Pyramide holographique</a></li>
           <li><a href="#">Lune</a></li>
-        </ul-->
+        </ul>
       </div>
     </nav>
 
+
     <div class="container-fluid">
 	  <br><br>
-      <p>Liste des planètes</p>
       <dl>
+        <dt>Liste des planètes</dt><br>
         <dt id="Soleil" onclick="setPlanete('Soleil')">* Soleil</dt>
         <dt id="Mercure" onclick="setPlanete('Mercure')">Mercure</dt>
         <dt id="Venus" onclick="setPlanete('Venus')">Venus</dt>
@@ -46,8 +49,32 @@
         <dt id="Saturne" onclick="setPlanete('Saturne')">Saturne</dt>
         <dt id="Uranus" onclick="setPlanete('Uranus')">Uranus</dt>
         <dt id="Neptune" onclick="setPlanete('Neptune')">Neptune</dt>
+        <dt id="m31" onclick="setPlanete('m31')">m31</dt>
+        <dt id="m57" onclick="setPlanete('m57')">m57</dt>
+        <dt id="m87" onclick="setPlanete('m87')">m87</dt>
+		    <dt id="Alphea6CL" onclick="setPlanete('Alphea6CL')">Alphea6CL</dt>
       </dl>     
-    
+      <div class="row">
+        <div class="col-sm-1">
+          <p style="color: gray;">Rapprocher -> l</p>
+        </div>
+        <div class="col-sm-1">
+          <p style="color: gray;">Eloigner -> m</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1">
+          <p style="color: gray;">Rétrécir -> ;</p>
+        </div>
+        <div class="col-sm-1">
+          <p style="color: gray;">Agrandir -> :</p>
+        </div>
+      </div>
+
+      <video id="videoHaut" width="420" src="" type="video/mp4"></video>
+      <video id="videoGauche" width="420" src="" type="video/mp4"></video>
+      <video id="videoBas" width="420" src="" type="video/mp4"></video>
+      <video id="videoDroite" width="420" src="" type="video/mp4"></video>
       <img id="imgHaut">
 	  <img id="imgGauche">
 	  <img id="imgBas">
@@ -56,12 +83,34 @@
   </div>
 </div>
 
+<script> 
+var myVideo = document.getElementById("video1"); 
+
+function playPause() { 
+  if (myVideo.paused) 
+    myVideo.play(); 
+  else 
+    myVideo.pause(); 
+} 
+
+function makeBig() { 
+    myVideo.width = 560; 
+} 
+
+function makeSmall() { 
+    myVideo.width = 320; 
+} 
+
+function makeNormal() { 
+    myVideo.width = 420; 
+} 
+</script> 
 <!--footer class="container-fluid">
   <p>Association Gens de la Lune</p>
 </footer-->
 
 <!-- Functions  -->
-<script src="js/main.js"></script>
+<script src="js/ph.js"></script>
 
 </body>
 </html>
