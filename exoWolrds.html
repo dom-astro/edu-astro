@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>JavaScript example</title>
+		<meta charSet="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<style media="only screen">
+            html, body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                box-sizing: border-box;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            html {
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 0;
+                overflow: auto;
+            }
+
+            body {
+                padding: 1rem;
+                overflow: auto;
+            }
+        </style>
+
+    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-alpine.css">
+	</head>
+	<body>
+    <h1>Exo worlds from AG Grid!</h1>
+
+    <div id="myGrid" class="ag-theme-alpine" style="height: 600px; width:100%;"></div>
+	  <div id="myChart" style="height: 100%;"></div>
+
+	<script src="exoplanet.eu_catalog.json"></script>
+    <script type="text/javascript" charset="utf-8">
+	var headers=datas[0];
+	var columnDefs=[];
+	Object.keys(headers).forEach(function(key) {
+		let header = {};
+		header.field=key;
+		columnDefs.push(header);
+	});
+	
+	var rowData=[];
+	datas.forEach(function(data,i) {
+		rowData.push(data);
+	});
+
+    // let the grid know which columns and what data to use
+    const gridOptions = {
+      defaultColDef: {
+        sortable: true,
+		filter: true
+      },
+      columnDefs: columnDefs,
+      rowData: rowData
+    };
+
+  // lookup the container we want the Grid to use
+  const eGridDiv = document.querySelector('#myGrid');
+
+  // create the grid passing in the div to use together with the columns & data we want to use
+  new agGrid.Grid(eGridDiv, gridOptions);
+
+  </script>
+	<script src="https://unpkg.com/ag-charts-community@4.2.0/dist/ag-charts-community.min.js" />
+		<script>var __basePath = './';</script>
+		<script type="text/javascript" charset="utf-8">
+		function sortByDiscoveryDate(a, b) {
+			return a.discovered - b.discovered;
+		}
+		var dataLines = [];
+		
+		var exoDatas = datas.sort(sortByDiscoveryDate);
+		var annee=1900;
+		var nombre=0;
+		var points = [];
+		exoDatas.forEach(function(exoData) {
+			if (exoData.discovered !== null ) {
+				nombre += 1;
+				if (exoData.discovered>annee) {
+					annee=exoData.discovered;
+					var point = {};
+					point.annee = annee;
+					//point.nbPlanete = 1;
+					point.nombre = nombre;
+					points.push(point);
+				} else {
+					points[points.length-1].nombre = nombre;
+					//points[points.length-1].nbPlanete += 1;
+				}
+			}
+		});
+		var options = {
+  container: document.getElementById('myChart'),
+  autoSize: true,
+  title: {
+    text: 'Evolution des découvertes de planète',
+  },
+  subtitle: {
+    text: 'Nombre de planètes par année de découverte',
+  },
+  data: points,
+  series: [
+    {
+      xKey: 'annee',
+      yKey: 'nombre',
+      label: {
+        enabled: true,
+        fontWeight: 'bold',
+      },
+    },
+  ],
+};
+
+agCharts.AgChart.create(options);
+		</script>
+	</body>
+</html>
