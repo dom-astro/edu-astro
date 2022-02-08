@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>JavaScript example</title>
+		<title>Exo worlds</title>
 		<meta charSet="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
 		<style media="only screen">
@@ -34,12 +34,67 @@
 	<body>
     <h1>Exo worlds from AG Grid!</h1>
 
+	<div id="myChart" style="height: 100%;"></div>
     <div id="myGrid" class="ag-theme-alpine" style="height: 600px; width:100%;"></div>
-	  <div id="myChart" style="height: 100%;"></div>
 
 	<script src="exoplanet.eu_catalog.json"></script>
     <script type="text/javascript" charset="utf-8">
-	var headers=datas[0];
+function getDensite(exoPlanet) {
+	var rJup = +6.9911*Math.pow(10,7);
+	var mJup = +1.8986*Math.pow(10,27);
+	
+	var m = exoPlanet.masse*mJup;
+	var v = (4/3)*Math.PI*Math.pow(exoPlanet.rayon*rJup,3);
+	
+	return (m == 0 ? 0 : (v == 0 ? 0 : (m/v/1000).toFixed(2)));
+}
+
+function getType(exoPlanet) {
+	
+	if (exoPlanet.densite>2) return "Rocheuse";
+	if (exoPlanet.densite>0) return "Gazeuse";
+
+	return "NA";
+}
+
+var exoPlanets = [];
+datas.forEach(function(data,i) {
+	var exoPlanet = {};
+	exoPlanet.name = data.name;
+	exoPlanet.star = (data.star_name = undefined ? "" : data.star_name);
+	if (data.discovered == null) {
+		exoPlanet.discovered = data.updated.substring(0,4);
+	} else {
+		exoPlanet.discovered = data.discovered;
+	}
+	exoPlanet.masse = data.mass*317.62; // conversion en masse terrestre
+	//exoPlanet.rayon = data.radius == null ? 10 : data.radius;
+	exoPlanet.rayon = data.radius*11.2; // conversion en rayon terrestre//(data.radius == null ? 0.1 : data.radius);
+	exoPlanet.periode = data.orbital_period;
+	exoPlanet.distance = data.star_distance;
+	exoPlanet.updated = data.updated;
+	exoPlanet.detection = data.detection_type;
+	exoPlanet.magnitude = data.mag_v;
+	exoPlanet.ra = data.ra;
+	exoPlanet.dec = data.dec;
+	exoPlanet.star_k = data.star_teff;
+	exoPlanet.spectre = data.star_sp_type;
+	exoPlanet.major = data.semi_major_axis;
+	exoPlanet.e = data.eccentricity; //(data.eccentricity == null ? 0 : data.eccentricity);
+	exoPlanet.tStar = data.star_teff;
+	exoPlanet.rStar = data.star_radius;
+	exoPlanet.densite = +getDensite(exoPlanet);
+	exoPlanet.type = getType(exoPlanet);
+	
+	exoPlanets.push(exoPlanet);
+	/*if (exoPlanet.discovered>=1995) {
+		exoPlanets.push(exoPlanet);
+	}*/
+});
+
+// Effacement des données initiales
+datas = [];
+	var headers=exoPlanets[0];
 	var columnDefs=[];
 	Object.keys(headers).forEach(function(key) {
 		let header = {};
@@ -48,12 +103,14 @@
 	});
 	
 	var rowData=[];
-	datas.forEach(function(data,i) {
+	exoPlanets.forEach(function(data,i) {
 		rowData.push(data);
 	});
 
     // let the grid know which columns and what data to use
     const gridOptions = {
+	  pagination: true,
+	  paginationPageSize: 100,
       defaultColDef: {
         sortable: true,
 		filter: true
@@ -76,8 +133,8 @@
 			return a.discovered - b.discovered;
 		}
 		var dataLines = [];
-		
-		var exoDatas = datas.sort(sortByDiscoveryDate);
+
+		var exoDatas = exoPlanets.sort(sortByDiscoveryDate);
 		var annee=1900;
 		var nombre=0;
 		var points = [];
@@ -98,6 +155,7 @@
 			}
 		});
 		var options = {
+		 theme: 'ag-material-dark',
   container: document.getElementById('myChart'),
   autoSize: true,
   title: {
@@ -109,13 +167,29 @@
   data: points,
   series: [
     {
+      type: 'line',
       xKey: 'annee',
+	  xName: 'Année de la découverte',
       yKey: 'nombre',
+	  yName: 'Nombre d\'exoplanètes',
+      stroke: '#01c185',
+      marker: {
+        stroke: '#01c185',
+        fill: '#01c185',
+      },
       label: {
         enabled: true,
         fontWeight: 'bold',
       },
-    },
+	  tooltip: {
+        renderer: function (params) {
+          return {
+            title: '<p>Année '+params.xValue+'</p><!-- img src="Corot.png" width="32px" /-->',
+            content: params.yValue.toFixed(0)+' planètes découvertes',
+          };
+        },
+      },
+	},
   ],
 };
 
