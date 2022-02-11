@@ -42,10 +42,16 @@
 			.nav-link {
 			  color: #bebebe;
 			  text-transform: uppercase;
+			  background-color: #212529 !important;
 			}
 			.nav-link:hover {
-				color: black;
-				background-color: #eee;
+				color: black !important;
+				background-color: #eee !important;
+				border: 0 !important;
+				border-radius: 0.25rem !important;
+				font-weight: bold;
+			}
+			.nav-link.active {
 			}
 		</style>
     <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
@@ -61,8 +67,8 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link active" aria-current="page" href="#">Exoplanètes</a>
+      <div class="navbar-nav navbar-dark bg-dark align-items-stretch">
+        <a class="nav-link active" href="#">Exoplanètes</a>
         <a class="nav-link" href="#">Equation de Drake</a>
         <a class="nav-link" href="#">Pyramide holographique</a>
         <a class="nav-link disabled">Lune</a>
@@ -72,7 +78,8 @@
 </nav>
 <div class="row">
   <div class="col-2">
-	<nav id="navbar-right" class="navbar navbar-dark bg-dark flex-column align-items-stretch p-3" style="position: sticky; top: 10px;">
+	<div class="container-fluid" style="position: sticky; top: -15px; padding-top: 22px">
+	<nav id="navbar-right" class="navbar navbar-dark bg-dark flex-column align-items-stretch p-3">
 	  <ul class="nav nav-pills flex-column">
         <li class="nav-item">
           <a class="nav-link stat" href="#myCards">Statistiques</a>
@@ -89,6 +96,7 @@
        </ul>
 	  </nav>
 	</nav>
+  </div>
   </div>
   <div class="col-10">
 	<div data-bs-spy="scroll" data-bs-target="#navbar-right" data-bs-offset="0" tabindex="0" style="position: relative; overflow: auto;">
