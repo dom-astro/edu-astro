@@ -4,8 +4,10 @@
 		<title>Exo worlds</title>
 		<meta charSet="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+	<script src="jquery-3.6.0.min.js"></script>
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 		<style media="only screen">
             html, body {
                 height: 100%;
@@ -53,9 +55,24 @@
 			}
 			.nav-link.active {
 			}
+			
+			p {
+				text-align: center;
+			}
+			
+			.ag-chart-wrapper, .ag-root-wrapper {
+				border: 5px solid white;
+				border-radius: 5px;
+			}
+			#dimSelect {
+				padding: 4px;
+				width: 200px;
+				height: 60px;
+				margin-top: 35px;
+			}
 		</style>
     <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
-    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham-dark.css">
+    <link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-theme-balham.css">
 	</head>
 	<body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -102,45 +119,80 @@
 	<div data-bs-spy="scroll" data-bs-target="#navbar-right" data-bs-offset="0" tabindex="0" style="position: relative; overflow: auto;">
 	  <div id="myCards" class="container-fluid">
 	  <br>
-	    <div class="row">
-		  <div class="col-3">
+	    <div class="row container-fluid">
+		  <h1 style="color: white; text-align: center">Statistiques sur les exoplanètes</h1>
+		  <div class="col-2">
 			<div class="card text-dark bg-light mb-3" style="width: 90%;">
-			  <div class="card-header"><h4 class="card-title">Découvertes</h4></div>
+			  <div class="card-header"><h6 class="card-title">Exoplanètes</h6></div>
 			  <div class="card-body">			
 				<h1><p class="card-text" id="decouverte"></p></h1>
 			  </div>
 			</div>
 		  </div>
-		  <div class="col-3">
+		  <div class="col-2">
 			<div class="card text-dark bg-light mb-3" style="width: 90%;">
-			  <div class="card-header"><h4 class="card-title">Etoiles</h4></div>
+			  <div class="card-header"><h6 class="card-title">Confirmées</h6></div>
 			  <div class="card-body">			
-				<h1><p class="card-text" id="etoile"></p></h1>
+				<h1><p class="card-text" id="confirmed"></p></h1>
 			  </div>
 			</div>
 		  </div>
-		  <div class="col-3">
+		  <div class="col-2">
 			<div class="card text-dark bg-light mb-3" style="width: 90%;">
-			  <div class="card-header"><h4 class="card-title">Systèmes multiples</h4></div>
+			  <div class="card-header"><h6 class="card-title">Gazeuses</h6></div>
 			  <div class="card-body">			
-				<h1><p class="card-text" id="systeme"></p></h1>
+				<h1><p class="card-text" id="gazeuse"></p></h1>
+			  </div>
+			</div>
+		  </div>
+		  <div class="col-2">
+			<div class="card text-dark bg-light mb-3" style="width: 90%;">
+			  <div class="card-header"><h6 class="card-title">Rocheuses</h6></div>
+			  <div class="card-body">			
+				<h1><p class="card-text" id="rocheuse"></p></h1>
+			  </div>
+			</div>
+		  </div>
+		  <div class="col-2">
+			<div class="card text-dark bg-light mb-3" style="width: 90%;">
+			  <div class="card-header"><h6 class="card-title">Zone habitable</h6></div>
+			  <div class="card-body">			
+				<h1><p class="card-text" id="zh"></p></h1>
+			  </div>
+			</div>
+		  </div>
+		  <div class="col-2">
+			<div class="card text-dark bg-light mb-3" style="width: 90%;">
+			  <div class="card-header"><h6 class="card-title">Errantes</h6></div>
+			  <div class="card-body">			
+				<h1><p class="card-text" id="wandering"></p></h1>
 			  </div>
 			</div>
 		  </div>
 		</div>
-	  <div id="myChart" class="container-fluid" style="height: 300px;"><br></div><br><br>
-	  <div id="myGrid" class="ag-theme-balham-dark container-fluid" style="height: 600px; width:100%;"></div>
-	</div>
+		<br>
+		<h1 style="color: white; text-align: center">Evolution des découvertes sur les exoplanètes</h1>
+	    <div id="myChart" class="container-fluid" style="height: 300px;"></div>
+		<br><br>
+		<h1 style="color: white; text-align: center">Liste des exoplanètes</h1>
+	    <div id="myGrid" class="ag-theme-balham container-fluid" style="height: 600px; width:100%;"></div>
+		<br><br>
+		<h1 style="color: white; text-align: center">Système Trappist-1</h1>
+		<div id="planetarium"></div>
+	  </div>
+    </div>
   </div>
-</div>
 
 	<video autoplay muted loop id="myVideo">
 	  <source src="starSky.mp4" type="video/mp4">
 	</video>
 
 	<script src="exoplanet.eu_catalog.csv.json").></script>
+	<script src="typeFilter.js"></script>
+	<script src="listeFilter.js"></script>
 	<script src="exoplanetes.js"></script>
-	<script src="jquery-3.6.0.min.js"></script>
+	<script src="orbite.js"></script>
+	<script src="system.js"></script>
     <script type="text/javascript" charset="utf-8">
 		var datas=csvJSON(csv);
 		var exoPlanets = getExoDatas(datas);
@@ -162,8 +214,19 @@
 			$(".nav").find(".stat").addClass("active");
 		});
 		
-		$("#decouverte").html(exoPlanets.length);
+		$("#decouverte").html(getNbPlanets(exoPlanets));
+		$("#wandering").html(getNbWanderingPlanets(exoPlanets));
+		$("#etoile").html(getNbStars(exoPlanets));
+		$("#simple").html(getNbType(exoPlanets,'Gazeuse'));
+		$("#double").html(getNbMulti(exoPlanets,2));
+		$("#triple").html(getNbMulti(exoPlanets,3));
+		$("#quadruple").html(getNbMulti(exoPlanets,4));		
+		$("#gazeuse").html(getNbType(exoPlanets,'Gazeuse'));
+		$("#rocheuse").html(getNbType(exoPlanets,'Rocheuse'));
+		$("#zh").html(getNbZH(exoPlanets));
+		$("#confirmed").html(getNbConfirmed(exoPlanets));
 		
+		initSystem(exoPlanets,'TRAPPIST-1');
 	</script>
 	</body>
 </html>
