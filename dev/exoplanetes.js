@@ -6,7 +6,7 @@ function sortByStarName(a, b) {
 }
 
 function sortByDiscoveryDate(a, b) {
-    return a.discovered - b.discovered;
+    return a["Année découverte"] - b["Année découverte"];
 }
 
 function getMaxDate(refDate, currentDate) {
@@ -21,18 +21,36 @@ function getDensite(exoPlanet) {
 	var rJup = +6.9911*Math.pow(10,7);
 	var mJup = +1.8986*Math.pow(10,27);
 	
-	var m = exoPlanet.masse*mJup;
-	var v = (4/3)*Math.PI*Math.pow(exoPlanet.rayon*rJup,3);
+	var m = exoPlanet.mass*mJup;
+	var v = (4/3)*Math.PI*Math.pow(exoPlanet.radius*rJup,3);
 	
 	return (m == 0 ? 0 : (v == 0 ? 0 : (m/v/1000).toFixed(2)));
 }
 
 function getType(exoPlanet) {
-	
-	if (exoPlanet.densite>2) return "Rocheuse";
-	if (exoPlanet.densite>0) return "Gazeuse";
+	var densite = getDensite(exoPlanet);
+	if (densite>2) return "Rocheuse";
+	if (densite>0) return "Gazeuse";
 
-	return "NA";
+	return "";
+}
+
+function formatNumber(number, isDecimal = false)
+{
+    number = number.toFixed(2) + '';
+    x = number.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ' ' + '$2');
+    }
+	
+	x=x1;
+	if (isDecimal) {
+		x = x + x2;
+	}
+    return x;
 }
 
 var stats = {};
@@ -52,36 +70,64 @@ function getExoDatas(datas) {
 	
 	datas.forEach(function(data,i) {
 		var exoPlanete = {};
-		exoPlanete.name = data.name;
-		exoPlanete.star = (data.star_name = undefined ? "" : data.star_name);
+		exoPlanete["Nom"] = data.name;
+		exoPlanete["Type"] = getType(data);
+		exoPlanete["Zone habitable"] = getZH(data);
+		exoPlanete["Etoile"] = (data.star_name = undefined ? "" : data.star_name);
 		if (data.discovered == null) {
-			exoPlanete.discovered = data.updated.substring(0,4);
+			exoPlanete["Année découverte"] = data.updated.substring(0,4);
 		} else {
-			exoPlanete.discovered = data.discovered;
+			exoPlanete["Année découverte"] = data.discovered;
 		}
-		exoPlanete.masse = data.mass*317.62; // conversion en masse terrestre
+		exoPlanete["Statut"] = data.planet_status;
+		exoPlanete["Masse (Terre)"] = formatNumber(data.mass*317.62,true); // conversion en masse terrestre
 		//exoPlanete.rayon = data.radius == null ? 10 : data.radius;
-		exoPlanete.rayon = data.radius*11.2; // conversion en rayon terrestre//(data.radius == null ? 0.1 : data.radius);
-		exoPlanete.periode = data.orbital_period;
-		exoPlanete.distance = data.star_distance;
-		exoPlanete.updated = data.updated;
+		exoPlanete["Rayon (Terre)"] = formatNumber(data.radius*11.2,true); // conversion en rayon terrestre//(data.radius == null ? 0.1 : data.radius);
+		exoPlanete["Période (Jour)"] = data.orbital_period;
+		exoPlanete["Distance (Année lumière)"] = formatNumber(data.star_distance*3.26,true);
+		exoPlanete["Dernière mise à jour"] = data.updated;
 		exoPlanete.detection = data.detection_type;
 		exoPlanete.magnitude = data.mag_v;
 		exoPlanete.ra = data.ra;
 		exoPlanete.dec = data.dec;
-		exoPlanete.star_k = data.star_teff;
+		exoPlanete["Température de l'étoile"] = data.star_teff;
 		exoPlanete.spectre = data.star_sp_type;
 		exoPlanete.major = data.semi_major_axis;
-		exoPlanete.e = data.eccentricity; //(data.eccentricity == null ? 0 : data.eccentricity);
-		exoPlanete.tStar = data.star_teff;
-		exoPlanete.rStar = data.star_radius;
-		exoPlanete.densite = +getDensite(exoPlanete);
-		exoPlanete.type = getType(exoPlanete);
+		exoPlanete.excentricite = data.eccentricity; //(data.eccentricity == null ? 0 : data.eccentricity);
+		exoPlanete.star_rayon = data.star_radius;
+		exoPlanete["Densité"] = getDensite(data);
 		
 		exoPlanetes.push(exoPlanete);
 	});
 	
-	return exoPlanetes.sort(sortByDiscoveryDate);;
+	return exoPlanetes.sort(sortByDiscoveryDate);
+}
+
+function getZH(exoPlanet) {
+	var zh=coefZH(exoPlanet);
+	
+	if (zh==0) return '';
+	if (exoPlanet.semi_major_axis>=(0.953*zh) && zh*exoPlanet.semi_major_axis<=(1.577*zh)) return "Oui";
+	
+	return "Non";
+}
+
+function coefZH(star) {
+	var tSun=5750;
+	var tStar=star.star_teff;
+	var rStar=star.star_radius;
+	var cstStefanBoltzmann=5.670374;
+
+	var lStar = getLuminosite(rStar, tStar);
+	var lSun = getLuminosite(1,tSun);
+	
+	return Math.sqrt(lStar/lSun);
+}
+
+function getLuminosite(rayon, temp) {
+	var cstStefanBoltzmann=5.670374;
+
+	return 4*Math.PI*Math.pow(rayon,2)*cstStefanBoltzmann*Math.pow(temp,4);
 }
 
 function getExoHeaders(headers) {
@@ -89,10 +135,140 @@ function getExoHeaders(headers) {
 	Object.keys(headers).forEach(function(key) {
 		let header = {};
 		header.field=key;
+		switch(key) {
+			case "Type":
+				header.filter='typeFilter';
+				break;
+			case "status":
+				header.filter='typeFilter';
+				break;
+			case "Année découverte":
+				header.filter='listeFilter';
+				break;
+			case "Zone habitable":
+				header.filter='typeFilter';
+				break;
+			case "Statut":
+				header.filter='typeFilter';
+				break;
+			default:
+			// code block
+		}			
 		columnDefs.push(header);
 	});
 	
 	return columnDefs;
+}
+
+function getNbZH(exoPlanets) {
+	var nbExoPlanet=0;
+	
+	exoPlanets.forEach(function(exoPlanet) {
+		if(exoPlanet["Zone habitable"] == "Oui" && exoPlanet["Etoile"] != 'Sun') {
+			nbExoPlanet +=1
+		}	
+	});
+	
+	return formatNumber(nbExoPlanet);
+}
+
+function getNbConfirmed(exoPlanets,type) {
+	var nbExoPlanet=0;
+	
+	exoPlanets.forEach(function(exoPlanet) {
+		if(exoPlanet["Statut"] == "Confirmed" && exoPlanet["Etoile"] != 'Sun') {
+			nbExoPlanet +=1
+		}	
+	});
+	
+	return formatNumber(nbExoPlanet);
+}
+
+function getNbType(exoPlanets,type) {
+	var nbExoPlanet=0;
+	
+	exoPlanets.forEach(function(exoPlanet) {
+		if(exoPlanet["Type"] == type && exoPlanet["Etoile"] != 'Sun') {
+			nbExoPlanet +=1
+		}	
+	});
+	
+	return formatNumber(nbExoPlanet);
+}
+function getNbWanderingPlanets(exoPlanets) {
+	var nbWanderingPlanets=0;
+	
+	exoPlanets.forEach(function(exoPlanet) {
+		if(exoPlanet["Etoile"] == '') {
+			nbWanderingPlanets +=1
+		}	
+	});
+	
+	return formatNumber(nbWanderingPlanets);
+}
+
+function getNbPlanets(exoPlanets) {
+	var nbExoPlanets=0;
+	
+	exoPlanets.forEach(function(exoPlanet) {
+		if(exoPlanet["Etoile"] != 'Sun') {
+			nbExoPlanets +=1
+		}	
+	});
+	
+	return formatNumber(nbExoPlanets);
+}
+
+function getNbStars(exoPlanets) {
+	exoPlanets=exoPlanets.sort(sortByStarName);
+	var exoStars=[{star: exoPlanets[0].star, nbPlanet: 0}];
+	var starName=exoPlanets[0]["Etoile"];
+	exoPlanets.forEach(function(exoPlanet) {
+		if(exoPlanet.star != 'Sun') {
+			if(exoPlanet.star!=starName) {
+				starName=exoPlanet["Etoile"];
+				star = {};
+				star.name=exoPlanet["Etoile"];
+				star.nbPlanet=1;
+				exoStars.push(star);
+			} else {
+				exoStars[exoStars.length-1].nbPlanet +=1;
+			}
+		}	
+	});
+	
+	return formatNumber(exoStars.length);
+}
+
+function getNbMulti(exoPlanets, nb=0) {
+	exoPlanets=exoPlanets.sort(sortByStarName);
+	var exoStars=[{star: exoPlanets[0]["Etoile"], nbPlanet: 0}];
+	var starName=exoPlanets[0]["Etoile"];
+	exoPlanets.forEach(function(exoPlanet) {
+		if(exoPlanet["Etoile"] != 'Sun') {
+			if(exoPlanet["Etoile"]!=starName) {
+				starName=exoPlanet["Etoile"];
+				star = {};
+				star.name=exoPlanet["Etoile"];
+				star.nbPlanet=1;
+				exoStars.push(star);
+			} else {
+				exoStars[exoStars.length-1].nbPlanet +=1;
+			}
+		}	
+	});
+	
+	if (nb==0) { 
+		exoStars = exoStars.filter(function(exoStar){
+			return exoStar.nbPlanet > 1;
+		});
+	} else {
+		exoStars = exoStars.filter(function(exoStar){
+			return exoStar.nbPlanet == nb;
+		});
+	}
+	
+	return formatNumber(exoStars.length);
 }
 
 function csvJSON(csv){
@@ -135,10 +311,15 @@ function setAgGrid(exoPlanets,div) {
 		paginationPageSize: 100,
 		defaultColDef: {
 			sortable: true,
-			filter: true
+			filter: true,
+			resizable: true
 		},
 		columnDefs: getExoHeaders(headers),
 		rowData: exoPlanets,
+		components: {
+			typeFilter: TypeFilter,
+			listeFilter: ListeFilter,
+		}
 	};
 
 	// lookup the container we want the Grid to use
@@ -156,10 +337,10 @@ function setAgChart(exoPlanets, div) {
 		var nombre=0;
 		var points = [];
 		exoDatas.forEach(function(exoData) {
-			if (exoData.discovered !== null && exoData.discovered !=='') {
+			if (exoData["Année découverte"] !== null && exoData["Année découverte"] !== undefined && exoData["Année découverte"] !=='') {
 				nombre += 1;
-				if (exoData.discovered>annee) {
-					annee=exoData.discovered;
+				if (exoData["Année découverte"]>annee) {
+					annee=exoData["Année découverte"];
 					var point = {};
 					point.annee = annee;
 					point.nbPlanete = 1;
@@ -177,7 +358,7 @@ function setAgChart(exoPlanets, div) {
 		}
 
 var myTheme = {
-  baseTheme: 'ag-pastel-dark',
+  baseTheme: 'ag-pastel',
   palette: {
     fills: ['#80a0c3','#80a0c3'],
     strokes: ['black'],
@@ -221,7 +402,7 @@ var myTheme = {
       },
       label: {
         enabled: true,
-		color: 'white',
+		color: 'black',
         fontWeight: 'bold',
 		formatter: formatNumber
 	  },
@@ -248,8 +429,8 @@ var myTheme = {
 	  },
 	  stroke: 'lightgray',
       label: {
-        enabled: true,
-		color: 'white',
+        enabled: false,
+		color: 'black',
         fontWeight: 'bold',
 		formatter: formatNumber
       },
