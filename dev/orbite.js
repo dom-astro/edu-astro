@@ -19,7 +19,7 @@ function movePlanets() {
 //Calculate the new x or y position per planet
 function locate(coord) {
 	return function(d){
-		var k = 360 * d.major * (d.major * Math.sqrt(1-d.excentricite*d.excentricite)) / (d["Période (Jour)"] * resolution * speedUp);
+		var k = 360 * d.major * (d.major * Math.sqrt(1-d.excentricite*d.excentricite)) / (d["Période"] * resolution * speedUp);
 		
 		for (var i = 0; i < resolution; i++) {
 			d.theta += k / (d.r * d.r);
