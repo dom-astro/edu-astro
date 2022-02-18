@@ -164,44 +164,42 @@ function initOrbit(planets) {
 								.attr("r", zh*((0.953+1.577)/2))
 								.style("fill", "green")
 								.style("fill-opacity", 0)
-								.style("stroke-opacity", 0)
+								.style("stroke-opacity", 0.6)
 								.style("stroke-width", zh*(1.577-0.953))
-								.style("stroke", "blue");
+								.style("stroke", "green");
 }
 
 function initPlanet(planets) {
   //Drawing the planets			
   var planetContainer = container.append("g").attr("class","planetContainer");
-  var planets = planetContainer.selectAll("g.planet")
-							   .data(planets).enter()
-							   .append("circle")
-						       .attr("id", function(d,i) {return "p-"+i;})
-							   .attr("class", "planet")
-							   .attr("r", function(d) {return radiusSizer*d.rayon;})//rScale(d.radius);})
-							   .attr("cx", function(d) {return d.x;})
-							   .attr("cy", function(d) {return d.y;})
-							   .style("fill", "#6363FF")
-							   //.style("fill", "blue")
-							   .style("opacity", planetOpacity)
-							   .style("stroke-opacity", 0)
-							   .style("stroke-width", "3px")
-							   .style("stroke", "white")
-							   .on("mouseover", function(d, i) {
-							  	 showEllipse(d, i, 0.6);
-							   })
-							   .on("mouseout", function(d, i) {
-							  	 showEllipse(d, i, 0);
-							   });
-							   
-
+  var planets = planetContainer.selectAll("g.planet").data(planets).enter();
+  
+  planets.append("circle")
+		.attr("id", function(d,i) {return "p-"+i;})
+		.attr("class", "planet")
+		.attr("r", function(d) {return radiusSizer*d.rayon;})//rScale(d.radius);})
+		.attr("cx", function(d) {return d.x;})
+		.attr("cy", function(d) {return d.y;})
+		.style("fill", "#6363FF")
+		//.style("fill", "blue")
+		.style("opacity", planetOpacity)
+		.style("stroke-opacity", 0)
+		.style("stroke-width", "3px")
+		.style("stroke", "white")
+		.on("mouseover", function(d, i) {
+			showEllipse(d, i, 0.6);
+		})
+		.on("mouseout", function(d, i) {
+			showEllipse(d, i, 0);
+		});
 }
 
 function getSpeedUp(planets) {
 	var maxPeriode=+0;
 	
 	planets.forEach(function(planet, i) {
-		if (planet["Période (Jour)"]>maxPeriode) {
-			maxPeriode=planet["Période (Jour)"];
+		if (planet["Période"]>maxPeriode) {
+			maxPeriode=planet["Période"];
 		}
 	});
 
@@ -240,7 +238,6 @@ function coefZH(star) {
 	var lSun = getLuminosite(1,tSun);
 	return Math.sqrt(lStar/lSun);
 }
-
 
 function getLuminosite(rayon, temp) {
 	var cstStefanBoltzmann=5.670374;
