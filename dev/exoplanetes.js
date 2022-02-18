@@ -6,7 +6,7 @@ function sortByStarName(a, b) {
 }
 
 function sortByDiscoveryDate(a, b) {
-    return a["Année découverte"] - b["Année découverte"];
+    return a["Année"] - b["Année"];
 }
 
 function getMaxDate(refDate, currentDate) {
@@ -73,20 +73,20 @@ function getExoDatas(datas) {
 		exoPlanete["Nom"] = data.name;
 		exoPlanete["Type"] = getType(data);
 		exoPlanete["Zone habitable"] = getZH(data);
-		exoPlanete["Etoile"] = (data.star_name = undefined ? "" : data.star_name);
 		if (data.discovered == null) {
-			exoPlanete["Année découverte"] = data.updated.substring(0,4);
+			exoPlanete["Année"] = data.updated.substring(0,4);
 		} else {
-			exoPlanete["Année découverte"] = data.discovered;
+			exoPlanete["Année"] = data.discovered;
 		}
+		exoPlanete["Distance"] = formatNumber(data.star_distance*3.26,true);
 		exoPlanete["Statut"] = data.planet_status;
-		exoPlanete["Masse (Terre)"] = formatNumber(data.mass*317.62,true); // conversion en masse terrestre
-		//exoPlanete.rayon = data.radius == null ? 10 : data.radius;
-		exoPlanete["Rayon (Terre)"] = formatNumber(data.radius*11.2,true); // conversion en rayon terrestre//(data.radius == null ? 0.1 : data.radius);
-		exoPlanete["Période (Jour)"] = data.orbital_period;
-		exoPlanete["Distance (Année lumière)"] = formatNumber(data.star_distance*3.26,true);
-		exoPlanete["Dernière mise à jour"] = data.updated;
 		exoPlanete.detection = data.detection_type;
+		exoPlanete["Masse"] = formatNumber(data.mass*317.62,true); // conversion en masse terrestre
+		//exoPlanete.rayon = data.radius == null ? 10 : data.radius;
+		exoPlanete["Rayon"] = formatNumber(data.radius*11.2,true); // conversion en rayon terrestre//(data.radius == null ? 0.1 : data.radius);
+		exoPlanete["Densité"] = getDensite(data);
+		exoPlanete["Période"] = data.orbital_period;
+		exoPlanete["Etoile"] = (data.star_name = undefined ? "" : data.star_name);
 		exoPlanete.magnitude = data.mag_v;
 		exoPlanete.ra = data.ra;
 		exoPlanete.dec = data.dec;
@@ -95,7 +95,7 @@ function getExoDatas(datas) {
 		exoPlanete.major = data.semi_major_axis;
 		exoPlanete.excentricite = data.eccentricity; //(data.eccentricity == null ? 0 : data.eccentricity);
 		exoPlanete.star_rayon = data.star_radius;
-		exoPlanete["Densité"] = getDensite(data);
+		exoPlanete["Dernière mise à jour"] = data.updated;
 		
 		exoPlanetes.push(exoPlanete);
 	});
@@ -104,24 +104,19 @@ function getExoDatas(datas) {
 }
 
 function getZH(exoPlanet) {
-	var zh=coefZH(exoPlanet);
+	var tSun=5750;
+	var tStar=exoPlanet.star_teff;
+	var rStar=exoPlanet.star_radius;
+	var cstStefanBoltzmann=5.670374;
+
+	var lStar = getLuminosite(rStar, tStar);
+	var lSun = getLuminosite(1,tSun);
+	var zh=Math.sqrt(lStar/lSun);
 	
 	if (zh==0) return '';
 	if (exoPlanet.semi_major_axis>=(0.953*zh) && zh*exoPlanet.semi_major_axis<=(1.577*zh)) return "Oui";
 	
 	return "Non";
-}
-
-function coefZH(star) {
-	var tSun=5750;
-	var tStar=star.star_teff;
-	var rStar=star.star_radius;
-	var cstStefanBoltzmann=5.670374;
-
-	var lStar = getLuminosite(rStar, tStar);
-	var lSun = getLuminosite(1,tSun);
-	
-	return Math.sqrt(lStar/lSun);
 }
 
 function getLuminosite(rayon, temp) {
@@ -136,20 +131,46 @@ function getExoHeaders(headers) {
 		let header = {};
 		header.field=key;
 		switch(key) {
+			case "Nom":
+				header.width=150;
+				header.pinned='left';
+				break;
 			case "Type":
 				header.filter='typeFilter';
+				header.width=100;
 				break;
-			case "status":
+			case "Status":
 				header.filter='typeFilter';
+				header.width=100;
 				break;
-			case "Année découverte":
+			case "Année":
 				header.filter='listeFilter';
+				header.width=100;
+				header.headerTooltip='Année découverte';
+				break;
+			case "Distance":
+				header.width=100;
+				header.headerTooltip='Distance (Année lumière)';
 				break;
 			case "Zone habitable":
 				header.filter='typeFilter';
+				header.width=150;
 				break;
 			case "Statut":
 				header.filter='typeFilter';
+				header.width=100;
+				break;
+			case "Masse":
+				header.width=100;
+				header.headerTooltip='Masse terreste';
+				break;
+			case "Rayon":
+				header.width=80;
+				header.headerTooltip='Rayon terreste';
+				break;
+			case "Période":
+				header.width=100;
+				header.headerTooltip='Période en jour';
 				break;
 			default:
 			// code block
@@ -337,10 +358,10 @@ function setAgChart(exoPlanets, div) {
 		var nombre=0;
 		var points = [];
 		exoDatas.forEach(function(exoData) {
-			if (exoData["Année découverte"] !== null && exoData["Année découverte"] !== undefined && exoData["Année découverte"] !=='') {
+			if (exoData["Année"] !== null && exoData["Année"] !== undefined && exoData["Année"] !=='') {
 				nombre += 1;
-				if (exoData["Année découverte"]>annee) {
-					annee=exoData["Année découverte"];
+				if (exoData["Année"]>annee) {
+					annee=exoData["Année"];
 					var point = {};
 					point.annee = annee;
 					point.nbPlanete = 1;
