@@ -1,2 +1,2 @@
 # **Edu astro**
-Accéder à la [Edu astrot](https://dom-astro.github.io/edu-astro/)
+Accéder à [Edu astrot](https://dom-astro.github.io/edu-astro/)
