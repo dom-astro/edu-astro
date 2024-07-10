@@ -177,7 +177,7 @@ function initPlanet(planets) {
   planets.append("circle")
 		.attr("id", function(d,i) {return "p-"+i;})
 		.attr("class", "planet")
-		.attr("r", function(d) {return radiusSizer*d.rayon;})//rScale(d.radius);})
+		.attr("r", function(d) {return radiusSizer*(d.rayon == 0 ? 1 : d.rayon);})//rScale(d.radius);})
 		.attr("cx", function(d) {return d.x;})
 		.attr("cy", function(d) {return d.y;})
 		.style("fill", "#6363FF")
