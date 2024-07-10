@@ -65,7 +65,7 @@ datas.forEach(function(data,i) {
 	rayon = (data.radius == 0 ? 1 : data.radius);
 	rayon = (data.radius == null ? 1 : rayon);
 	rayon = (data.radius == NaN ? 1 : rayon);
-	exoPlanet.rayon = rayon.radius*11.2; // conversion en rayon terrestre//(data.radius == null ? 0.1 : data.radius);
+	exoPlanet.rayon = rayon*11.2; // conversion en rayon terrestre//(data.radius == null ? 0.1 : data.radius);
 	exoPlanet.periode = data.orbital_period;
 	exoPlanet.distance = data.star_distance;
 	exoPlanet.updated = data.updated;
