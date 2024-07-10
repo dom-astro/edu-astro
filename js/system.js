@@ -47,7 +47,7 @@ function initSystem(star) {
   planets = planets.sort(sortByPlanetName);
   planets.forEach(function(planet, i) {
 	e = (planet.e == null ? 0 : planet.e);
-	rayon = (planet.rayon == null or (planet.rayon == 0 ? 1 : planet.rayon);
+	rayon = (planet.rayon == null or planet.rayon == 0 ? 1 : planet.rayon);
   	planet.rayon = rayon*zoomRadius;
   	planet.major = planet.major*zoomMajor;
   	planet.minor = planet.major * Math.sqrt(1-e*e);
