@@ -47,9 +47,7 @@ function initSystem(star) {
   planets = planets.sort(sortByPlanetName);
   planets.forEach(function(planet, i) {
 	e = (planet.e == null ? 0 : planet.e);
-	rayon = (planet.rayon == 0 ? 1 : planet.rayon);
-	rayon = (planet.rayon == NaN ? 1 : rayon);
-  	planet.rayon = rayon*zoomRadius;
+  	planet.rayon = planet.rayon*zoomRadius;
   	planet.major = planet.major*zoomMajor;
   	planet.minor = planet.major * Math.sqrt(1-e*e);
   	planet.c = Math.sqrt(planet.major*planet.major - planet.minor*planet.minor);
@@ -64,7 +62,8 @@ function initSystem(star) {
   
   	$("#listePlanetes").append('<a class="list-group-item" onmouseover="showEllipse(\''+planet.name+'\', '+i+', 0.6)" onmouseout="showEllipse(\''+planet.name+'\', '+i+', 0)" onclick="setEllipse(\''+planet.name+'\', '+i+')"><span style="text-align: left"><i class="glyphicon glyphicon-globe"></i></span> ' + planet.name + '</a>');
   });
-  	$("#listePlanetes").append('<a class="list-group-item" onmouseover="showZH(0.2)" onmouseout="showZH(0)" onclick="showZH(0.6)"><span style="text-align: left"><i class="glyphicon glyphicon-globe"></i></span> Zone habitable</a>');
+
+  $("#listePlanetes").append('<a class="list-group-item" onmouseover="showZH(0.2)" onmouseout="showZH(0)" onclick="showZH(0.6)"><span style="text-align: left"><i class="glyphicon glyphicon-globe"></i></span> Zone habitable</a>');
   
   initSVG();
   initStar(planets);
