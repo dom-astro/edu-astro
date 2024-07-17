@@ -7,8 +7,8 @@ body {
 	font-family: 'Open Sans', sans-serif;
 	text-align: center;
 	vertical-align: middle;
-	/*background: url(../img/galaxy.jpg);*/
-	background: black;
+	background: url(../img/stars.png);
+	/*background: black;*/
 	cursor: default;}
 
 body {
